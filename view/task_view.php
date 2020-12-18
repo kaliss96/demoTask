@@ -18,6 +18,8 @@
 	<script src="<?php echo base_url();?>/js/moment/moment.js"></script>
 	<script src="<?php echo base_url();?>/js/moment/locale/es-us.js"></script>
 	<script src="<?php echo base_url();?>/js/datepicker/js/bootstrap-datetimepicker.min.js"></script>
+ <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 	<style type="text/css">
 	   /* #left { float:left }
 	    #right { float:right }*/
@@ -56,8 +58,8 @@
   </div>
  </div>
  
-		<h1>Create Task matus</h1>
-		
+		<h1>Create Task</h1>
+
     <div class="row hidden-xs">
         <div class="col-sm-6 col-md-6 col-lg-6">
             <div class="form-group">
@@ -157,7 +159,7 @@
             <div class="form-group">
                 <label for="team_id" class="col-sm-3 col-md-3 col-lg-2 control-label">Id Equipo</label>
                 <div class="col-sm-9 col-md-6 col-lg-5">
-                   <input type="text" class="form-control" id="team_id" placeholder="Ingrese su Id de equipo">
+                   <input type="text" class="form-control" id="team_id" value="772534" placeholder="Ingrese su Id de equipo">
                 </div>
             </div>
 			 <div class="form-group">
@@ -245,7 +247,7 @@
     </div>
 	<div class="row hidden-xs">
  
-	<a id="btnenviar" class="btn btn-success mb-1 editar" onclick="enviar_datos_ajax();"><i class="icon-fixed-width icon-save"></i> Guardar </a>
+	<a id="btnenviar" class="btn btn-info mb-1 detalle" onclick="enviar_datos_ajax();"><i class="icon-fixed-width icon-save"></i> Guardar </a>
 	</div>
 </form>
   </div>
@@ -293,6 +295,7 @@
         		</thead>
         	 
         	</table>
+			
 			</div>
 			</div>
 			</div>
@@ -323,20 +326,18 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Edit task</h4>
+        <h4 class="modal-title" id="myModalLabel">View task</h4>
       </div>
-	  <div class="modal-body">
+        <div class="modal-body">
         
           <form class="form form-horizontal" role="form" id="ma-form">
-            
+
               <div class="form-group">
                 <span style="color:">
                   <label for="AUTHGRP" class="col-xs-3 control-label">Orden</label>
                 </span>
                 <div class="col-xs-6">
-                  
-                      <input type="text" class="form-control" name="AUTHGRP" id="AUTHGRP" placeholder="AuthorizGroup">
-                  
+                  <input type="text" class="form-control" name="AUTHGRP" id="AUTHGRP" placeholder="AuthorizGroup">
                 </div>
               </div>
             
@@ -345,9 +346,7 @@
                   <label for="DESCRIPT" class="col-xs-3 control-label">usuario</label>
                 </span>
                 <div class="col-xs-6">
-                  
-                      <input type="text" class="form-control" name="DESCRIPT" id="DESCRIPT" placeholder="Description">
-                  
+                  <input type="text" class="form-control" name="DESCRIPT" id="DESCRIPT" placeholder="Description">
                 </div>
               </div>
             
@@ -355,23 +354,19 @@
                 <span style="color:">
                   <label for="OBJECTTYPE" class="col-xs-3 control-label">Equipo</label>
                 </span>
-                <div class="col-xs-6">
-                  
-                      <input type="text" class="form-control" name="OBJECTTYPE" id="OBJECTTYPE" placeholder="Object type">
-                  
+                <div class="col-xs-6"> 
+                  <input type="text" class="form-control" name="OBJECTTYPE" id="OBJECTTYPE" placeholder="Object type">
                 </div>
               </div>
             
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <span style="color:">
                   <label for="PLANGROUP" class="col-xs-3 control-label">Planner group</label>
                 </span>
                 <div class="col-xs-6">
-                  
-                      <input type="text" class="form-control" name="PLANGROUP" id="PLANGROUP" placeholder="Planner group">
-                  
+                      <input type="text" class="form-control" name="PLANGROUP" id="PLANGROUP" placeholder="Planner group">               
                 </div>
-              </div>
+              </div> -->
             
               <div class="form-group">
                 <span style="color:">
@@ -395,13 +390,13 @@
                 </div>
               </div>
 			  
-			  <div class="form-group">
+      			  <div class="form-group">
                 <span style="color:">
-                  <label for="EQUICATGRY" class="col-xs-3 control-label">Fecha</label>
+                  <label for="txtFECHA" class="col-xs-3 control-label">Fecha</label>
                 </span>
                 <div class="col-xs-6">
                   
-                      <input type="text" class="form-control" name="EQUICATGRY" id="EQUICATGRY" placeholder="EquipCategory">
+                      <input type="text" class="form-control" name="txtFECHA" id="txtFECHA" placeholder="EquipCategory">
                   
                 </div>
               </div>
@@ -411,18 +406,28 @@
                   <label for="" class="col-xs-3 control-label">Estado</label>
                 </span>
                 <div class="col-xs-6">
-                  
-                      <input type="" class="form-control" name="" id="" placeholder="">
+                     <select id="slcEstado">
+					  <option value="0">Assigned</option>
+					  <option value="1">Started</option>
+					  <option value="2">Successful</option>
+					  <option value="3">Failed</option>
+					  <option value="4">InProgress</option>
+					  <option value="6">Unassigned</option>
+					  <option value="7">Accepted</option>
+					  <option value="8">Decline</option>
+					  <option value="10">Deleted</option>
+					 
+					  </select>
+					  
+					  
                   
                 </div>
               </div>
             
-          </form>   
-        
-      </div>
+          </form>     
+        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-check"></i> Aceptar</button>
- 
       </div>
     </div>
   </div>
