@@ -1,37 +1,36 @@
 var _funcion, jqTblPD = $("#tblPD"),tabla={},opt_table={},jqIdjob,idWatcher;
 
 function LoadTable(dataSource)
-	{
+{
 	tabla.clear();
     tabla.rows.add(dataSource);
     tabla.draw();
 
 	var modalConfirm = function(callback){
  
-$("#modal-btn-si").on("click", function(){
-    callback(true);
-    $("#modalconfirm").modal('hide');
-  });
-  
-  $("#modal-btn-no").on("click", function(){
-    callback(false);
-    $("#modalconfirm").modal('hide');
-  });
-};
+	$("#modal-btn-si").on("click", function(){
+	    callback(true);
+	    $("#modalconfirm").modal('hide');
+	  });
+	  
+	  $("#modal-btn-no").on("click", function(){
+	    callback(false);
+	    $("#modalconfirm").modal('hide');
+	  });
+	};
 
-modalConfirm(function(confirm){
-if(confirm){
-	call_borrar(jqIdjob);
-	
-//$(".alert-danger").removeCLASS("hide");
-    console.log("confirmado el borrado");
-  }else{
-    console.log("negado el borrado");
-  }
-});	
+	modalConfirm(function(confirm){
+		if(confirm){
+			call_borrar(jqIdjob);
+			
+			//$(".alert-danger").removeCLASS("hide");
+		    console.log("confirmado el borrado");
+		  }else{
+		    console.log("negado el borrado");
+		  }
+	});	
 		
 $("#tblPD tbody").on("click",".borrar", function () {
-
 	var tr = $(this).closest('tr');
 	var row = tabla.row( tr );
 	datos=row.data();
@@ -42,19 +41,33 @@ $("#tblPD tbody").on("click",".borrar", function () {
 	$("#modalconfirm").modal('show');
 });
 
-$('#tblPD tbody').on('click', '.editar', function () {
-       // var data = tabla.row( this ).data();
-        //console.log(data);
+	$('#tblPD tbody').on('click', '.editar', function () {
+		// var data = tabla.row( this ).data();
+		//console.log(data);
 		var tr = $(this).closest('tr');
-	var row = tabla.row( tr );
-	datos=row.data();
-	console.log("datos",datos);
-	jqIdjob=datos.id_trabajo;	
+		var row = tabla.row( tr );
+		var jqOrden = $("#AUTHGRP"),
+			jqUsuario = $("#DESCRIPT"),
+			jqEquipo = $("#OBJECTTYPE"),
+			jqPlannerGroup = $("#PLANGROUP"),
+			jqTrabajo = $("#PLANPLANT"),
+			jqDireccion = $("#EQUICATGRY"),
+			jqFecha = $("#txtFECHA"),
+			jqEstado = $("#slcEstado");
+
+		datos=row.data();
+		console.log("datos editar",datos);
+		jqIdjob=datos.id_trabajo;
 		$("#modalviewtask").modal('show');
-		
-    } );
-		
-		}
+		jqOrden.val(datos.id_order);
+		jqUsuario.val(datos.id_usuario);
+		jqEquipo.val(datos.id_equipo);
+		jqTrabajo.val(datos.id_trabajo);
+		jqDireccion.val(datos.direccion);
+		jqFecha.val(datos.fecha);
+		jqEstado.val(datos.estado);
+	});
+}
 
 function call_procesar(){
 	var url=BASE_URL+"TaskControllers/get_all_tasks";
@@ -69,13 +82,12 @@ function call_procesar(){
 			data = JSON.parse(datos);
 			var dataSource=[];
 			$.each(data, function( index, value ) {
-  console.log( index , ": " , value );
-         if(value.order_id>0)
-		dataSource.push({id_order:value.order_id,id_usuario:value.user_id,id_equipo:value.team_id,id_trabajo:value.job_id,direccion:value.job_pickup_address,fecha:value.job_pickup_datetime,estado:value.job_status,entrega:value.job_delivery_datetime,tiempo_de_creacion:value.creation_datetime});
-});
-	 
-	
-    LoadTable(dataSource);
+			console.log( index , ": " , value );
+	        if(value.order_id>0)
+			dataSource.push({id_order:value.order_id,id_usuario:value.user_id,id_equipo:value.team_id,id_trabajo:value.job_id,direccion:value.job_pickup_address,fecha:value.job_pickup_datetime,estado:value.job_status,entrega:value.job_delivery_datetime,tiempo_de_creacion:value.creation_datetime});
+			});
+
+	    	LoadTable(dataSource);
 	       // console.log('data0', data.length);
 		}
 	});
@@ -90,20 +102,20 @@ function call_borrar(Id){
 		data:{jobId:Id},
 		success:function(datos){
 			//$("#mostrardatos").html(datos);
-			
+
 			data = JSON.parse(datos);
 			$(".alert-success .message").html('&nbsp;'+data.res_delete_task.message);
 			$(".alert-success").removeClass("hide");
 			$("html, body").animate({ scrollTop: 0 }, "slow");
 			var dataSource=[];
 			$.each(data.all_tasks, function( index, value ) {
-  console.log( index , ": " , value );
-         if(value.order_id>0)
-		dataSource.push({id_order:value.order_id,id_usuario:value.user_id,id_equipo:value.team_id,id_trabajo:value.job_id,direccion:value.job_address,fecha:value.job_pickup_datetime,estado:value.job_status,entrega:value.job_delivery_datetime,tiempo_de_creacion:value.creation_datetime});
-});
+			console.log( index , ": " , value );
+		        if(value.order_id>0)
+				dataSource.push({id_order:value.order_id,id_usuario:value.user_id,id_equipo:value.team_id,id_trabajo:value.job_id,direccion:value.job_address,fecha:value.job_pickup_datetime,estado:value.job_status,entrega:value.job_delivery_datetime,tiempo_de_creacion:value.creation_datetime});
+			});
 	
-    LoadTable(dataSource);
-	        console.log('data0', data.length);
+	    	LoadTable(dataSource);
+		    console.log('data0', data.length);
 		}
 	});
 }
@@ -144,13 +156,13 @@ $(document).ready(function () {
 	            { title : "Geo referencia", data : "action", class : 'text-center' } */
 	        ],
 			"columnDefs":
-[
-{
-"data": null,
-"defaultContent": '<a id="editar" class="btn btn-success mb-1 editar"><i class="icon-fixed-width icon-pencil"></i> Editar</a>&nbsp;<a id="borrar" class="btn btn-danger mb-2 borrar"><i class="icon-trash icon-large"></i> Borrar</a>',
-"targets": -1
-}
-]
+		[
+			{
+				"data": null,
+				"defaultContent": '<a id="editar" class="btn btn-info mb-1 editar"><i class="icon-fixed-width icon-pencil"></i> Detalle</a>&nbsp;<a id="borrar" class="btn btn-danger mb-2 borrar"><i class="icon-trash icon-large"></i> Borrar</a>',
+				"targets": -1
+			}
+		]
 	    };
 		tabla=jqTblPD.DataTable( opt_table);
 
@@ -158,13 +170,13 @@ $(document).ready(function () {
 
   $('#btnenviar').on('click', function() {
     var $this = $(this);
-  $('#btnenviar').html('saving').focus();
- 
+  $('#btnenviar').html('saving').focus(); 
 });
 
 function onErrorDeUbicacion (err){
 	console.log("Error obteniendo ubicación: ", err);
 }
+
 const opcionesDeSolicitud = {
 		enableHighAccuracy: true, // Alta precisión
 		maximumAge: 0, // No queremos caché
@@ -172,40 +184,39 @@ const opcionesDeSolicitud = {
 	};
 function onUbicacionConcedida(ubicacion){
 	//console.log(ubicacion);
-		 $('#job_pickup_latitude').val(ubicacion.coords.latitude);
-		 $('#job_pickup_longitude').val(ubicacion.coords.longitude);
+		$('#job_pickup_latitude').val(ubicacion.coords.latitude);
+		$('#job_pickup_longitude').val(ubicacion.coords.longitude);
 		//loguear(`${ubicacion.timestamp}: ${coordenadas.latitude},${coordenadas.longitude}`);
 		//enviarAServidor(ubicacion);
-	}
+}
+
 if (idWatcher) {
 	navigator.geolocation.clearWatch(idWatcher);
 }
 idWatcher = navigator.geolocation.watchPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud);
 //console.log("idwatcher",idWatcher);
  
- $('#job_pickup_datetime').datetimepicker(
-{
-    format:'YYYY-MM-DD HH:mm',
-    inline: true,
-	pickTime: true,
-    showToday:true ,
-	showClear: true
-  }
- );
-  
-        $('#job_pickup_datetime').on('dp.change', function (ev) {
+$('#job_pickup_datetime').datetimepicker(
+	{
+	    format:'YYYY-MM-DD HH:mm',
+	    inline: true,
+		pickTime: true,
+	    showToday:true ,
+		showClear: true
+	}
+);
 
-           //$(this).data('DateTimePicker').hide();
+$('#job_pickup_datetime').on('dp.change', function (ev) {
+   //$(this).data('DateTimePicker').hide();
+});
 
-         });
-      
- 
 $("#job_pickup_datetime input").val(fecha).trigger("change");
 
-$("#btnenviar").on("click",function(e){
-	
+$("#btnenviar").on("click",function(e){	
 	$(this).html('<i class="icon-fixed-width icon-spinner"></i>');
 });
+
+$("#slcEstado").select2({width:"270px"});
 
 });
 
@@ -237,54 +248,51 @@ function enviar_datos_ajax(){
 	var g=$('#geofence').val();
 
 	var url=BASE_URL+"TaskControllers/create_task";
-       if(oi>0){
-	$.ajax({
-		type:"post",
-		url:url,
-		data:{order:oi, descripction:jd, pickup_phone:jpp, pickup_name:jpn, pickup_email:jpe, pickup_adress:jpa, 
-				pickup_latitude:jpl, longitud:l, pickup_datetime:jpd, custom_field_template:pcft, price:pmt_price,quanty:pmt_quanty,
-				team_id:ti, assignment:aa, pickup:hp, delivery:hd, layout_type:lt, tracking_link:tl, timezone:tz,
-				fleet_id:fi, p_ref_images:pri, notify:n, tags:t, geofence:g, _funcion:"1"},
-		success:function(datos){
-			//$("#mostrardatos").html(datos);
-               console.log('data', datos);
-			data = JSON.parse(datos);
-	        //console.log('data', data.length);
-			$("#btnenviar").html('<i class="icon-fixed-width icon-save"></i> Guardar');
-			if(data.job_id>0)
-			{
-			 $(".alert-success .message").html('&nbsp;Task creada '+data.job_id);
-		   $(".alert-success").removeClass("hide");
-		   call_procesar();
-		    }
-		    else
-			{
-			$(".alert-danger .message").html('&nbsp;Task no creada ');	
-			$(".alert-success").addClass("hide");
-		     
+    if(oi>0){
+		$.ajax({
+			type:"post",
+			url:url,
+			data:{order:oi, descripction:jd, pickup_phone:jpp, pickup_name:jpn, pickup_email:jpe, pickup_adress:jpa, 
+					pickup_latitude:jpl, longitud:l, pickup_datetime:jpd, custom_field_template:pcft, price:pmt_price,quanty:pmt_quanty,
+					team_id:ti, assignment:aa, pickup:hp, delivery:hd, layout_type:lt, tracking_link:tl, timezone:tz,
+					fleet_id:fi, p_ref_images:pri, notify:n, tags:t, geofence:g, _funcion:"1"},
+			success:function(datos){
+				//$("#mostrardatos").html(datos);
+	            console.log('data', datos);
+				data = JSON.parse(datos);
+		        //console.log('data', data.length);
+				$("#btnenviar").html('<i class="icon-fixed-width icon-save"></i> Guardar');
+				if(data.job_id>0)
+				{
+					$(".alert-success .message").html('&nbsp;Task creada '+data.job_id);
+				   	$(".alert-success").removeClass("hide");
+				   	call_procesar();
+			    }
+			    else
+				{
+					$(".alert-danger .message").html('&nbsp;Task no creada ');	
+					$(".alert-success").addClass("hide"); 
+				}
+				$("html, body").animate({ scrollTop: 0 }, "slow");
+				$('.btn').button('reset');
+	        	if(data.length != 0){
+				console.log('test entro');
+	            }else{
+	           		console.log('test no entro');
+
+	           		$("#tblPDBody").html('');
+	           		$("#tblPDBody").append('<tr><td colspan="24">No existen registros.</td></tr>');
+	           }
 			}
-			$("html, body").animate({ scrollTop: 0 }, "slow");
-			$('.btn').button('reset');
-           if(data.length != 0){
-	      console.log('test entro');
-           
-           }else{
-           		console.log('test no entro');
-           		 
-           		$("#tblPDBody").html('');
-           		$("#tblPDBody").append('<tr><td colspan="24">No existen registros.</td></tr>');
-           }
-		}
-	});
-	   }
-	   else
-	   {
-		   $(".alert-danger .message").html('&nbsp;order requerida ');	
-			$(".alert-danger").removeClass("hide");
-			$(".alert-success").addClass("hide");
-			$('.btn').button('reset');
-			$("html, body").animate({ scrollTop: 0 }, "slow");
-		   
-	   }
+		});
+	}
+	else
+	{
+	   $(".alert-danger .message").html('&nbsp;order requerida ');	
+		$(".alert-danger").removeClass("hide");
+		$(".alert-success").addClass("hide");
+		$('.btn').button('reset');
+		$("html, body").animate({ scrollTop: 0 }, "slow");
+	}
 
 }
